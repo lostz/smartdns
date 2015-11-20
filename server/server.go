@@ -12,9 +12,10 @@ import (
 	"github.com/coreos/go-etcd/etcd"
 	"github.com/coreos/go-systemd/activation"
 	"github.com/lostz/logging"
-	"github.com/lostz/skydns/cache"
-	"github.com/lostz/skydns/msg"
+	"github.com/lostz/smartdns/cache"
 	"github.com/lostz/smartdns/config"
+	"github.com/lostz/smartdns/msg"
+	"github.com/lostz/smartdns/store"
 	"github.com/miekg/dns"
 )
 
@@ -23,9 +24,9 @@ const Version = "2.5.2c"
 var logger = logging.GetLogger("server")
 
 type Server struct {
-	backend Backend
-	config  *config.Config
-
+	backend      Backend
+	config       *config.Config
+	store        *store.Store
 	group        *sync.WaitGroup
 	dnsUDPclient *dns.Client // used for forwarding queries
 	dnsTCPclient *dns.Client // used for forwarding queries
@@ -69,11 +70,11 @@ func (g FirstBackend) ReverseRecord(name string) (record *msg.Service, err error
 	return nil, lastError
 }
 
-func NewServer(backend Backend, config *config.Config) *Server {
+func NewServer(backend Backend, store *store.Store, config *config.Config) *Server {
 	return &Server{
-		backend: backend,
-		config:  config,
-
+		backend:      backend,
+		config:       config,
+		store:        store,
 		group:        new(sync.WaitGroup),
 		scache:       cache.New(config.SCache, 0),
 		rcache:       cache.New(config.RCache, config.RCacheTtl),
@@ -227,7 +228,9 @@ func (self *Server) ServeDNS(w dns.ResponseWriter, req *dns.Msg) {
 	if self.config.Verbose {
 		logger.Infof("received DNS Request for %q from %q with type %d", q.Name, w.RemoteAddr(), q.Qtype)
 	}
-
+	// formant name
+	fname := self.formatName(name, w.RemoteAddr().String())
+	q.Name = fname
 	// Check cache first.
 	m1 := self.rcache.Hit(q, dnssec, tcp, m.Id)
 	if m1 != nil {
@@ -865,6 +868,28 @@ func (self *Server) PTRRecords(q dns.Question) (records []dns.RR, err error) {
 
 	records = append(records, serv.NewPTR(q.Name, serv.Ttl))
 	return records, nil
+}
+
+func (self *Server) formatName(name, remoteAddr string) string {
+	ip := strings.Split(remoteAddr, ":")[0]
+	var fname string
+	isp, err := self.store.Get(ip)
+	if err == nil {
+		switch isp {
+		case "CNC":
+			fname = "cnc" + "." + name
+		case "CTC":
+			fname = "ctc" + "." + name
+		case "CMN":
+			fname = "cmn" + "." + name
+		default:
+			fname = "default" + "." + name
+		}
+	} else {
+		logger.Errorf("%s not in store", ip)
+		fname = "default" + "." + name
+	}
+	return fname
 }
 
 func isEtcdNameError(err error, s *Server) bool {

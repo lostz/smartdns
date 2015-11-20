@@ -12,7 +12,8 @@ import (
 
 	"github.com/coreos/go-etcd/etcd"
 	"github.com/lostz/logging"
-	backendetcd "github.com/lostz/skydns/backends/etcd"
+	"github.com/lostz/skydns/store"
+	backendetcd "github.com/lostz/smartdns/backends/etcd"
 	"github.com/lostz/smartdns/config"
 	"github.com/lostz/smartdns/server"
 	"github.com/miekg/dns"
@@ -87,8 +88,15 @@ func start(conf *config.Config) error {
 		Ttl:      conf.Ttl,
 		Priority: conf.Priority,
 	})
+	store := store.NewStore()
+	ipFile, err := os.Open(conf.Ipfile)
+	if err != nil {
+		logger.Errorf("can not read ip file ", err.Error())
+	} else {
+		store.Load(ipFile)
+	}
 
-	s := server.NewServer(backend, conf)
+	s := server.NewServer(backend, store, conf)
 	s.Start()
 	return nil
 

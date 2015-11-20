@@ -54,8 +54,8 @@ type Config struct {
 	Ndots int `json:"ndot,omitempty"`
 
 	Verbose bool `json:"-"`
+	Ipfile  string
 	Pidfile string
-
 	// some predefined string "constants"
 	LocalDomain []string // "local.dns." + config.Domain
 	DnsDomain   []string // "ns.dns". + config.Domain
