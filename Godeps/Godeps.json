@@ -1,0 +1,33 @@
+{
+	"ImportPath": "github.com/lostz/smartdns",
+	"GoVersion": "go1.5.1",
+	"Deps": [
+		{
+			"ImportPath": "github.com/BurntSushi/toml",
+			"Comment": "v0.1.0-18-g443a628",
+			"Rev": "443a628bc233f634a75bcbdd71fe5350789f1afa"
+		},
+		{
+			"ImportPath": "github.com/coreos/go-etcd/etcd",
+			"Comment": "v2.0.0-38-g003851b",
+			"Rev": "003851be7bb0694fe3cc457a49529a19388ee7cf"
+		},
+		{
+			"ImportPath": "github.com/coreos/go-systemd/activation",
+			"Comment": "v4",
+			"Rev": "b4a58d95188dd092ae20072bac14cece0e67c388"
+		},
+		{
+			"ImportPath": "github.com/lostz/logging",
+			"Rev": "56e4fc18860f06ba50b3e5e6d59db02b11a44a61"
+		},
+		{
+			"ImportPath": "github.com/miekg/dns",
+			"Rev": "d27455715200c7d3e321a1e5cadb27c9ee0b0f02"
+		},
+		{
+			"ImportPath": "github.com/ugorji/go/codec",
+			"Rev": "8bb56663530600b54f72c79871451ea5725b6763"
+		}
+	]
+}
