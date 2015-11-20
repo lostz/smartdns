@@ -12,8 +12,8 @@ import (
 
 // Hit returns a dns message from the cache. If the message's TTL is expired nil
 // is returned and the message is removed from the cache.
-func (c *Cache) Hit(question dns.Question, dnssec, tcp bool, msgid uint16) *dns.Msg {
-	key := Key(question, dnssec, tcp)
+func (c *Cache) Hit(question dns.Question, isp string, dnssec, tcp bool, msgid uint16) *dns.Msg {
+	key := Key(question, isp, dnssec, tcp)
 	m1, exp, hit := c.Search(key)
 	if hit {
 		// Cache hit! \o/

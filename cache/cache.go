@@ -121,9 +121,9 @@ func (c *Cache) Search(s string) (*dns.Msg, time.Time, bool) {
 
 // Key creates a hash key from a question section. It creates a different key
 // for requests with DNSSEC.
-func Key(q dns.Question, dnssec, tcp bool) string {
+func Key(q dns.Question, isp string, dnssec, tcp bool) string {
 	h := sha1.New()
-	i := append([]byte(q.Name), packUint16(q.Qtype)...)
+	i := append([]byte(q.Name+isp), packUint16(q.Qtype)...)
 	if dnssec {
 		i = append(i, byte(255))
 	}

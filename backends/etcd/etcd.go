@@ -38,7 +38,8 @@ func NewBackend(client *etcd.Client, config *Config) *Backend {
 	}
 }
 
-func (g *Backend) Records(name string, exact bool) ([]msg.Service, error) {
+func (g *Backend) Records(name, isp string, exact bool) ([]msg.Service, error) {
+	name = isp + "." + name
 	path, star := msg.PathWithWildcard(name)
 	r, err := g.get(path, true)
 	if err != nil {
