@@ -12,10 +12,10 @@ import (
 
 	"github.com/coreos/go-etcd/etcd"
 	"github.com/lostz/logging"
-	"github.com/lostz/skydns/store"
 	backendetcd "github.com/lostz/smartdns/backends/etcd"
 	"github.com/lostz/smartdns/config"
 	"github.com/lostz/smartdns/server"
+	"github.com/lostz/smartdns/store"
 	"github.com/miekg/dns"
 )
 
