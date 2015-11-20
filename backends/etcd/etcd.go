@@ -13,7 +13,7 @@ import (
 	"sync"
 
 	"github.com/coreos/go-etcd/etcd"
-	"github.com/lostz/skydns/msg"
+	"github.com/lostz/smartdns/msg"
 )
 
 // Config represents configuration for the Etcd backend - these values
