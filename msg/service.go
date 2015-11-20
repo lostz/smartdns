@@ -18,7 +18,7 @@ import (
 // Then:
 // 	The SkyDNS's configuration object should be stored under the key "/mydns/config";
 // 	The etcd path of domain `service.staging.skydns.local.` will be "/mydns/local/skydns/staging/service".
-var PathPrefix string = "skydns"
+var PathPrefix string = "smartdns"
 
 // This *is* the rdata from a SRV record, but with a twist.
 // Host (Target in SRV) must be a domain name, but if it looks like an IP
